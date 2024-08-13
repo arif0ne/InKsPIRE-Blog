@@ -1,0 +1,92 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | About{%endblock%}
+
+    {% block content %}
+        {% include 'navbar.html' %}
+
+
+
+
+<main>
+
+
+
+    <section class="featured">
+        <center>
+            <h1>About Page</h1>
+
+        </center>
+
+        <!-- there is space -->
+        <div style="margin-bottom:3rem;"></div>
+        <div class="container featured__container">
+            <div class="post__thumbnail">
+                <img src="{%static 'images/blog1.jpg'%}" alt="" />
+            </div>
+            <div class="post__info">
+                <!--<a href="#" class="category__button">Wild Life</a>-->
+                <h2 class="post__title">
+                    <a href="{% url 'about'%}">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                        Perspiciatis, ullam.
+                    </a>
+                </h2>
+                <p class="post__body" align="justify">
+                    Blogs have become an integral part of the digital landscape, offering a platform for individuals,
+                    businesses, and organizations to share their thoughts, expertise, and experiences with the world.
+                    In the vast expanse of the internet, blogs serve as personal diaries, professional portfolios,
+                    informational resources, and even hubs for niche communities. They offer a unique blend of creativity,
+                    expression, and information dissemination, allowing writers to connect with audiences across the globe on a multitude of topics.
+
+                    At their core, blogs are dynamic entities,
+                    constantly evolving with the interests and passions of their creators.
+                    They provide a space for individuals to express themselves freely,
+                    whether it's through personal anecdotes, insightful commentary,
+                    or detailed analysis. Unlike traditional media outlets,
+                    blogs offer a level of immediacy and authenticity that resonates with readers seeking genuine, unfiltered content.
+                    Blogs have become an integral part of the digital landscape, offering a platform for individuals, businesses,
+                    and organizations to share their thoughts, expertise,
+                    Blogs have become an integral part of the digital landscape, offering a platform for individuals, businesses, and organizations to share their thoughts, expertise,
+                    Blogs have become an integral part of the digital landscape, offering a platform for individuals, businesses, and organizations to share their thoughts, expertise,
+                </p>
+
+
+                <!-- ============= there is author Profile ================ -->
+                <!--
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{%static 'images/Admin.jpg'%}" alt="" />
+                    </div>
+                   <div class="post__author-info">
+                        <h5>By: Jane Doe</h5>
+                        <small>June 10,2022 - 07:23</small>
+                    </div>
+                        </div>
+                                 -->
+
+
+
+
+
+            </div>
+        </div>
+
+
+    </section>
+</main>
+
+
+<!-- there is space -->
+<div style="margin-bottom:4.5rem;"></div>
+
+<!-- main html tag end -->
+{% include 'footer.html'%}
+
+
+
+
+
+
+
+    {% endblock content %}

@@ -1,0 +1,107 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | {{ searched }}{%endblock%}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+
+<!-- main html tag start -->
+
+<main>
+    <section class="search__bar">
+        <form action="{% url 'search' %}" method="POST" class="container search__bar-container">
+            {% csrf_token %}
+            <div>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="searched" placeholder="Search" style="color:white;" />
+            </div>
+            <button type="submit" class="btn">Go</button>
+        </form>
+    </section>
+    <br />
+    <!-- there is messages -->
+    <div class="container">
+        <div class="alert__message error">
+            <center>
+                <p style="color:rgb(255, 106, 0); font-size:1.1rem;">Hunting for Treasures: " {{ searched }} "</p>
+            </center>
+        </div>
+    </div>
+
+
+
+    {% if messages %}
+
+    {% for message in messages %}
+    <div class="container">
+        <div class="alert__message error">
+            <p>{{ message }}!</p>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+
+
+
+
+
+    <!-- there is just a sample for setup -->
+    <!-- ==========================Posts start here================================ -->
+    <section class="posts">
+        <div class="container posts__container">
+            {% if prods %}
+            {% for postt in prods %}
+            <article class="post">
+                <div class="post__thumbnail">
+                    <img src=" {{ postt.image.url }} " alt="" />
+                </div>
+                <div class="post__info">
+                    <a href="{% url 'category' postt.category %}" class="category__button">{{postt.category}}</a>
+                    <h3 class="post__title">
+                        <a href="{%url 'product' postt.id %}">{{postt.title|slice:':30'}} ...</a>
+                    </h3>
+                    <p class="post__body">
+                        {{postt.description | slice:":120"}}
+                    </p>
+                </div>
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{{ postt.author.profilemodel.image.url }}" alt="" />
+                    </div>
+                    <div class="post__author-info">
+                        <h5>By: {{postt.author.username}}</h5>
+
+                        <small>{{postt.published_in}}</small>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+            {% else %}
+
+            <center>
+                <h2> Chose Other Category !</h2>
+            </center>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+    <!-- ==========================Category buttons start here================================ -->
+    <section class="category__buttons">
+        <div class="container category__buttons-container">
+            <a href="{% url 'category' 'Art' %}" class="category__button">Art</a>
+            <a href="{% url 'category' 'Wild Lifes' %}" class="category__button">Wild Life</a>
+            <a href="{% url 'category' 'Travel' %}" class="category__button">Travel</a>
+            <a href="{% url 'category' 'Science & Technology' %}" class="category__button">Science & Technology</a>
+            <a href="{% url 'category' 'Food' %}" class="category__button">Food</a>
+            <a href="{% url 'category' 'Music' %}" class="category__button">Music</a>
+        </div>
+    </section>
+    <!-- ==========================Category buttons End here================================ -->
+</main>
+<!-- main html tag end -->
+{% endblock content %}

@@ -1,0 +1,84 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | Category Wish{%endblock%}
+
+    {% block content %}
+        {% include 'navbar.html' %}
+<!-- main html tag start -->
+<main>
+    <section class="category__title">
+        <h1>{{category}}</h1>
+
+    </section>
+    <div class="search__bar">
+        <form action="{% url 'search' %}" method="POST" class="container search__bar-container">
+            {% csrf_token %}
+            <div>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="searched" placeholder="Search" style="color:white;" />
+            </div>
+            <button type="submit" class="btn">Go</button>
+        </form>
+    </div>
+
+    <!-- ==========================Posts start here================================ -->
+    {% if posts %}
+    <section class="posts">
+        <div class="container posts__container">
+
+            {% for post in posts %}
+            <article class="post">
+                <div class="post__thumbnail">
+                    <img src=" {{ post.image.url }} " alt="" />
+                </div>
+                <div class="post__info">
+                    <a href="" class="category__button">{{post.category}}</a>
+                    <h3 class="post__title">
+                        <a href="{%url 'product' post.id %}">{{post.title|slice:':36'}} ...</a>
+                    </h3>
+                    <p class="post__body">
+                        {{post.description | slice:":120"}}
+                    </p>
+                </div>
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{{ post.author.profilemodel.image.url }}" alt="" />
+                    </div>
+                    <div class="post__author-info">
+                        <h5>By: Dr.Dre</h5>
+                        <small>{{post.published_in}}</small>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    {%else%}
+    <div style="margin-bottom:5rem;margin-top:5rem;">
+        <center><h2>This Category items is not available!</h2></center>
+
+    </div>
+
+    <!-- ==========================Category buttons start here================================ -->
+    <section class="category__buttons">
+        <div class="container category__buttons-container">
+            <a href="{% url 'category' 'Art' %}" class="category__button">Art</a>
+            <a href="{% url 'category' 'Wild-Lifes' %}" class="category__button">Wild Life</a>
+            <a href="{% url 'category' 'Travel' %}" class="category__button">Travel</a>
+            <a href="{% url 'category' 'Science-&-Technology' %}" class="category__button">Science & Technology</a>
+            <a href="{% url 'category' 'Food' %}" class="category__button">Food</a>
+            <a href="{% url 'category' 'Music' %}" class="category__button">Music</a>
+        </div>
+    </section>
+    <!-- ==========================Category buttons End here================================ -->
+    {%endif%}
+
+
+    <!-- ==========================Posts End here================================ -->
+
+</main>
+<!-- main html tag end -->
+{%include 'footer.html'%}
+    {% endblock content %}

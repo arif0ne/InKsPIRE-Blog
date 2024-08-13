@@ -1,0 +1,40 @@
+{% extends "link.html" %}
+{%load static %}
+
+    {% block content %}
+
+
+<section class="form__section">
+    <div class="container form__section-container">
+        <center>
+            <a href="/">
+                <h2 style="font-family: cursive; font-size:2rem;">Sign Out</h2>
+            </a>
+        </center>
+        <br />
+        <!-- ============ massages ============ -->
+
+        <div class="alert__message error">
+            <p style="color:rgb(247, 19, 19)">You Have Logged Out!  <a style="margin-left:1rem;" href="{% url 'sign_in'%}"> Back to SignIn?  </p>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+

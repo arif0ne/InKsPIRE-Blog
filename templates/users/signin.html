@@ -1,0 +1,86 @@
+
+{% extends "link.html" %}
+{%load static %}
+{% block content %}
+
+
+<section class="form__section">
+    <div class="container form__section-container">
+        <center>
+            <a href="{% url 'home' %}">
+                <h2 style="font-family: cursive; font-size:2.3rem;">Sign In</h2>
+            </a>
+        </center>
+        <br />
+        <!-- ============ massages ============ -->
+        {% if messages %}
+        {% for messages in messages%}
+        <div class="alert__message error">
+            <p>{{ messages }}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <h4>Username :</h4>
+            {{ form.username }}
+            <h4>Password :</h4>
+
+            {{ form.password }}
+
+            
+            <button style="margin-top:.2rem;font-size:.9rem;" type="submit" class="btn center" value="Login">Sign In</button>
+            
+
+            <small>
+                Forget you password? <a href="{%url 'password_reset'%}">Reset password</a>
+                <br />
+
+                Ready to Begin? Click Below to Sign Up <a href="{% url 'sign_up' %}">Sign Up</a>
+
+                <br />
+                <br />
+                Are you admin? <a href="{%url 'admin:index'%}" target='_blank'>Go</a>
+
+            </small>
+        </form>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+        {% endblock content %}
+
+
+
+
+<!--<section class="form__section">
+    <div class="container form__section-container">
+        <h2>Sign In</h2>
+        <div class="alert__message success">
+            <p>This is an success message</p>
+        </div>
+        <form action="">
+            <input type="text" placeholder="Username" />
+            <input type="password" placeholder="Password" />
+            <button type="submit" class="btn">Sign In</button>
+            <small>
+                Don't have account? <a href="#">Sign Up</a> <br>
+                <a href="#">Back home</a>
+            </small>
+        </form>
+    </div>
+</section>-->
+
+
+
+

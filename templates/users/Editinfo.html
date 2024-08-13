@@ -1,0 +1,40 @@
+{% extends "link.html" %}
+{%load static %}
+{% block content %}
+
+{% include 'navbar.html'%}
+
+<section class="form__section">
+    <div class="container form__section-container">
+        <center>
+            <h2>Updat Personal Information</h2>
+        </center>
+        <div class="alert__message success">
+            <p>Are you Cancel your Updating Info! <a href="{%url 'profile'%}">Cancel!</a></p>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="thumbnail">Add First Name</label>
+            {{ u_form.first_name }}
+            <label for="thumbnail">Add Last Name</label>
+            {{ u_form.last_name }}
+            <label for="thumbnail">Add Username</label>
+            {{ u_form.username}}
+            <label for="thumbnail">Add Email</label>
+            {{ u_form.email}}
+
+            {{ p_form.image}}
+            <button type="submit" class="btn">Done</button>
+        </form>
+    </div>
+</section>
+
+
+
+
+
+        {% endblock content %}
+
+
+
+

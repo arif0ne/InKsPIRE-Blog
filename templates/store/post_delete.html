@@ -1,0 +1,28 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | Delete Post{%endblock%}
+
+    {% block content %}
+        {% include 'navbar.html' %}
+
+
+<!-- main html tag start -->
+<main>
+    <section class="form__section">
+        <div class="container form__section-container">
+            <!-- ============ massages ============ -->
+            <!-- ============ massages ============ -->
+            <form method="POST">
+                {% csrf_token %}
+                <div class="alert__message error">
+                    <p>Are you delete your post?  <a href="{% url 'home'%}">Cancel!</a></p>
+                </div>
+                <div class="text-center">
+                    <button type="submit" value="Confirm" class="btn">Remove</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<!-- main html tag end -->
+    {% endblock content %}

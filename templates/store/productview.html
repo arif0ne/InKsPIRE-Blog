@@ -1,0 +1,111 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | {{post.title}}{%endblock%}
+
+
+{%block link%}
+
+{%endblock link%}
+
+{% block content %}
+        {% include 'navbar.html' %}
+
+<main>
+    <section class="singlepost">
+        <div class="container">
+            {% if messages %}
+            {% for messages in messages%}
+            <div class="alert__message error">
+                <p style="color:rgb(255, 157, 21)">{{ messages }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+        <div class="container singlepost__container">
+
+
+            <h2>{{post.title}}</h2>
+            {% if post.author == request.user %}
+            <a href="{% url 'post_edit' post.id%} " class="category__button">Edit post</a>
+            <a href="{% url 'post_delete' post.id%} " class="category__button">Remove post</a>
+            {% endif %}
+            <div class="post__author">
+                <div class="post__author-avatar">
+                    <img src="{{ post.author.profilemodel.image.url }}" alt="" />
+                </div>
+                <div class="post__author-info">
+                    <h5>By: {{post.author}}</h5>
+                    <small>{{post.published_in}}</small>
+                </div>
+            </div>
+            <div class="singlepost__thumbnail">
+                <img src="{{post.image.url}}" alt="" />
+            </div>
+            <p>
+                {{post.description}}
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque
+                consectetur ad harum, deserunt officia ea excepturi quaerat magnam
+                unde veritatis atque. Suscipit, perspiciatis quia! Distinctio animi
+                magnam quis soluta doloremque omnis vero ab, dolor asperiores
+                accusantium aut pariatur eos numquam odit est reiciendis dicta ipsa
+                quod totam amet sunt magni rem enim! Repellendus accusamus corrupti
+                unde illum? Consequuntur, sed dicta?
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi
+                accusantium aliquid reiciendis amet sapiente nemo. Culpa rerum
+                accusantium nemo fuga doloribus hic similique qui nostrum explicabo
+                eveniet nam aliquid illo iste delectus quibusdam atque magnam, iure
+                dicta? Tempore, voluptatibus esse.
+            </p>
+            <!-- ======there is messages ========== -->
+            <br />
+            {% if post.comments %}
+            <h5>There is comments sections : </h5>
+            {% for comment in post.comments %}
+
+
+            <div class="post__author">
+                <div class="post__author-avatar">
+                    <img src="{{ comment.user.profilemodel.image.url }}" alt="" />
+
+                </div>
+                <div class="post__author-info">
+                    <h5>{{ comment.user }}</h5>
+                    <small>{{ comment.content }} </small>
+                </div>
+            </div>
+            {% endfor %}
+            {%else%}
+            {% endif %}
+
+
+
+        </div>
+    </section>
+    {% if request.user.is_authenticated %}
+    <section class="search__bar">
+        <center>
+            <h3>Add comment in the post ......</h3>
+        </center>
+        <form method="POST" class="container search__bar-container">
+
+            {% csrf_token %}
+            {{form.content}}
+            <button type="submit" class="btn">Add</button>
+        </form>
+    </section>
+    {% else %}
+    {%endif%}
+    <div style="margin-bottom:12rem;"></div>
+
+</main>
+
+
+
+
+
+        {% endblock content %}

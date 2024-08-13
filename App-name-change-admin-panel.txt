@@ -1,0 +1,9 @@
+#open our app
+
+#open our app.py
+
+class StoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'store'
+    verbose_name = "<set the name of app>"  #<--------------------------there is change
+    

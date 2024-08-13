@@ -1,0 +1,49 @@
+ {%load static%}
+ <!-- header html tag start -->
+    <header>
+      <!-- ==========================Nav Bar Start here================================ -->
+      <nav>
+        <div class="container nav__container">
+          <a href="/" class="nav__logo">InKsPIRE</a>
+          <ul class="nav__items">
+            <li><a href="{%url 'home'%}">Home</a></li>
+            <li><a href="{%url 'blog'%}">Blog</a></li>
+            <li><a href="{%url 'about'%}">About</a></li>
+            <li><a href="{%url 'service'%}">Services</a></li>
+            <li><a href="{%url 'contact'%}">Contact</a></li>
+            <li class="nav__profile">
+
+ {% if request.user.is_authenticated %}
+              <div class="avatar">
+                <img src="{{user.profilemodel.image.url}}" />
+              </div>
+              <ul>
+                <li><a href="{% url 'profile'%}">Dashboard</a></li>
+                <li><a href="{%url 'add_post'%}">Post add</a></li>
+
+                <li><a  style="color: white; font-family: cursive; font-size: 1rem;" href="{% url 'logout' %}">Logout</a></li>
+              </ul>
+            
+
+ {% else %}
+              <div class="avatar">
+                <img src="{% static 'images/avatar.jpg' %}" />
+              </div>
+              <ul>
+                <li><a style="font-family:cursive; font-size:1rem;" href="{%url 'sign_up'%}">SignUp</a></li>
+                <li><a style="color: white; font-family: cursive; font-size: 1rem;" href="{%url 'sign_in'%}">SignIn</a></li>
+              </ul>
+ {% endif %}
+              
+            </li>
+          </ul>
+
+          <button id="open__nav-btn"><i class="fa-solid fa-bars"></i></button>
+          <button id="close__nav-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </nav>
+      <!-- ==========================Nav Bar end here================================ -->
+    
+    </header>
+    <!-- header html tag end -->
+

@@ -1,0 +1,56 @@
+{% extends "link.html" %}
+{%load static %}
+
+    {% block content %}
+
+
+    <section class="form__section">
+        <div class="container form__section-container">
+            <center>
+                <a href="/">
+                    <h2 style="font-family: cursive; font-size:2rem;">Sign up</h2>
+                </a>
+            </center>
+            <br />
+            <!-- ============ massages ============ -->
+            {% if messages %}
+            {% for messages in messages%}
+            <div class="alert__message error">
+                <p>{{ messages }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+
+
+            <form method="POST">
+                {% csrf_token %}
+                <h5>Username :</h5>
+                {{ form.username }}
+                <h5>Email :</h5>
+
+                {{ form.email }}
+                <h5>Password :</h5>
+                 only 8 character password..!
+
+                {{ form.password1 }}
+
+                <h5> Re-entered password:</h5>
+                {{ form.password2 }}
+                <button style="margin-top:1rem;" type="submit" class="btn" value="Sign Up">Sign Up</button>
+                <small>
+                    Already have an account? <a href="{% url 'sign_in' %}">Sign In</a><br />
+                    <a href="{%url 'home'%}">Back home</a>
+                </small>
+            </form>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+        {% endblock content %}

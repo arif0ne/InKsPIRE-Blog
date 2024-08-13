@@ -1,0 +1,950 @@
+﻿===================== add post =====================================
+
+
+###### add-post.html
+
+
+      <form action="{% url 'add_post' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4>Title:</h4>
+        {{ form.title }}
+        <h4>Descriptions :</h4>
+
+        {{ form.description }}
+        <h4>Category :</h4>
+        
+        {{ form.category }}
+        
+        
+        <div class="form__control">
+          <label for="thumbnail">Add Thumbnail</label>
+          {{ form.image }}
+        </div>
+        <button type="submit" class="btn">Add Post</button>
+      </form>
+
+
+
+
+
+
+########## navbar.html
+
+
+
+ {% if user.is_authenticated %}
+              <div class="avatar">
+                <img src="{% static 'images/Admin.jpg' %}" />
+              </div>
+              <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="{%url 'add_post'%}">Post add</a></li>
+
+                <li><a href="#">Logout</a></li>
+              </ul>
+            
+
+ {% else %}
+              <div class="avatar">
+                <img src="{% static 'images/Admin.jpg' %}" />
+              </div>
+              <ul>
+                <li><a href="{%url 'sign_up'%}">SignUp</a></li>
+                <li><a href="{%url 'sign_in'%}">SignIn</a></li>
+              </ul>
+ {% endif %}
+
+
+
+
+
+#### forms.py
+
+from django import forms
+from .models import PostModel <--there is import PostModel
+
+
+
+class PostModelForm(forms.ModelForm):
+
+	description = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))
+	class Meta:
+		model = PostModel
+		fields = ('title','description','category','image')
+
+
+
+#### views.py
+
+
+ 
+from .forms import PostModelForm
+from django.contrib.auth.models import User  # Import the User model
+from django.contrib.auth import authenticate
+
+ 
+
+def add_post(request):
+    if request.method == 'POST':
+        form = PostModelForm(request.POST,request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            if request.user.is_authenticated:  # Debug statement
+                instance.author = request.user
+                instance.save()
+                messages.success(request, 'Post added successfully')
+                return redirect('home')
+            else:
+                return redirect('signin')  # Debug statement
+    else:
+        form = PostModelForm()
+
+    return render(request, 'store/add-post.html', {'form': form})
+
+
+
+
+
+
+
+<<<===================== SignUp for blog ========================================================================================>>>>
+
+
+#### urls.py   <===========
+
+from django.urls import path
+from .import views
+
+
+urlpatterns = [
+	path('',views.home,name='home'),
+
+	path('signup/',views.sign_up,name='sign_up'),
+    
+
+]
+
+
+
+
+#### navbar.html   <===========
+
+{% if request.user.is_authenticated %}
+             <div class="avatar">
+               <img src="{% static 'images/Admin.jpg' %}" />
+             </div>
+             <ul>
+               <li><a href="#">Dashboard</a></li>
+               <li><a href="{%url 'add_post'%}">Post add</a></li>
+
+               <li><a href="{% url 'logout' %}">Logout</a></li>
+             </ul>
+           
+
+{% else %}
+             <div class="avatar">
+               <img src="{% static 'images/Admin.jpg' %}" />
+             </div>
+             <ul>
+               <li><a style="font-family:cursive; font-size:1rem;" href="{%url 'sign_up'%}">SignUp</a></li>
+               <li><a style="color: white; font-family: cursive; font-size: 1rem;" href="{%url 'sign_in'%}">SignIn</a></li>
+             </ul>
+{% endif %}
+              
+
+
+
+
+
+
+#### views.py   <===========
+
+
+
+from .forms import SignUpForm
+from django.contrib.auth import authenticate, login,logout
+from django.contrib import messages
+
+
+def sign_up(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, "Registered successfully!")
+            return redirect('home')
+        else:
+            messages.success(request,"whoops ! somw problem!")
+            return render(request, 'users/signup.html', {'form': form})
+    else:
+        form = SignUpForm()  # Initialize the form object
+        return render(request, 'users/signup.html', {'form': form})
+    
+
+
+
+
+#### forms.py   <===========
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class SignUpForm(UserCreationForm):
+	
+	class Meta:
+		model = User
+		fields = ['username','email','password1','password2']
+		
+
+
+
+	# ----> notice of 'helptext removed'
+
+	def __init__(self, *args, **kwargs):
+		super(SignUpForm,self).__init__(*args, **kwargs)
+		
+		for fieldname in ['username','email','password1','password2']:
+			self.fields[fieldname].help_text = None
+		
+	
+
+
+
+
+
+
+#### Signup.html   <===========
+
+
+    <section class="form__section">
+        <div class="container form__section-container">
+          
+            <!-- ============ massages ============ -->
+            {% if messages %}
+            {% for messages in messages%}
+            <div class="alert__message error">
+                <p>{{ messages }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <h5>Username :</h5>
+                {{ form.username }}
+
+                <h5>Email :</h5>
+                {{ form.email }}
+
+                <h5>Password :</h5>
+                {{ form.password1 }}
+
+                <h5> Re-entered password:</h5>
+                {{ form.password2 }}
+
+                <button style="margin-top:1rem;" type="submit" class="btn" value="Sign Up">Sign Up</button>
+
+            </form>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+<<<===================== login for blog =====================================>>>>
+
+#### urls.py   <===========
+
+
+from django.urls import path
+from .import views
+
+# this for login
+from django.contrib.auth import views as auth_view   # এই মডিউলটি ক্লাস-ভিত্তিক ভিউ (ডিজাঙ্গো ১.১১ এ প্রবর্তিত) লগইন, লগআউট, পাসওয়ার্ড রিসেট এবং পাসওয়ার্ড পরিবর্তন করার মতো সাধারণ প্রামাণীকরণ টাস্কগুলি
+
+
+urlpatterns = [
+	path('',views.home,name='home'),
+
+	path('signup/',views.sign_up,name='sign_up'),
+    
+	path('signin/',auth_view.LoginView.as_view(template_name="users/signin.html"),name="sign_in"),
+
+]
+
+
+
+
+#### settings.py   <===========
+
+
+#for login
+LOGIN_REDIRECT_URL = "home"
+
+
+
+
+
+
+#### signin.html  <===========
+
+
+<form method="POST">
+            {% csrf_token %}
+
+            <h4>Username :</h4>
+            {{ form.username }}
+            <h4>Password :</h4>
+
+            {{ form.password }}
+
+            <button style="margin-top:1rem;" type="submit" class="btn" value="Login">Sign In</button>
+
+            <small>
+                Already have an account? <a href="{% url 'sign_up' %}">Sign Up</a><br />
+                <a href="{%url 'home'%}">Back home</a>
+            </small>
+</form>
+
+
+
+
+
+
+
+
+
+<<<===================== logout for blog =====================================>>>>
+
+#### urls.py   <===========
+
+
+from django.urls import path
+from .import views
+
+# this for login
+from django.contrib.auth import views as auth_view   # এই মডিউলটি ক্লাস-ভিত্তিক ভিউ (ডিজাঙ্গো ১.১১ এ প্রবর্তিত) লগইন, লগআউট, পাসওয়ার্ড রিসেট এবং পাসওয়ার্ড পরিবর্তন করার মতো সাধারণ প্রামাণীকরণ টাস্কগুলি
+
+
+urlpatterns = [
+	path('',views.home,name='home'),
+
+    path('logout/',views.logout_user,name="logout")
+]
+
+
+
+
+#### views.py   <===========
+
+def logout_user(request):
+    logout(request)
+    return render(request, 'users/logout.html')
+
+
+
+
+
+
+
+
+
+
+<<<===================== User Profile =====================================>>>>
+
+
+#### views.py   <===========
+
+
+def profile(request):
+    return render(request,'users/profile.html') 
+
+
+
+
+#### urls.py   <===========
+
+
+    path('profile/',views.profile,name='profile'),
+
+
+
+
+
+#### profile.html   <===========
+
+
+
+        <div class="post__thumbnail">
+            <img src="{{user.profilemodel.image.url}}" alt="profile-img" />
+        </div>
+
+
+        <div class="post__info">
+            
+            <h2 class="post__title" style="margin-bottom:11rem;">
+                
+                {{ user.first_name }}  {{ user.last_name  }}
+
+            </h2>
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+              {{ user.email }}
+
+            </h3>
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+                {{user.username}}
+
+            </h3>
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+                Address of users
+
+            </h3>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+#### models.py   <===========
+
+
+from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
+
+
+
+class ProfileModel(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE) 
+    image = models.ImageField(default='default.jpg',upload_to='profileImg/',validators=[FileExtensionValidator(['png','jpg'])])
+    
+    def __str__(self):
+      return self.user.username
+      
+
+
+
+
+
+#### signals.py   <===========
+
+from django.contrib.auth.models import User
+from .models import ProfileModel
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save,sender=User)
+def create_profile(sender,instance,created,*args,**kwargs):
+    if created:
+        ProfileModel.objects.create(user=instance)
+
+
+
+
+
+
+
+
+
+#### apps.py   <===========
+
+from django.apps import AppConfig
+
+
+class StoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'store'
+    
+
+
+    ### day 8 | for Profile| setup your apps in apps.py     <===============
+
+    def ready(self):
+        import store.signals
+
+
+
+
+
+
+
+
+<<<===================== User update Profile Info =====================================>>>>
+
+
+
+#### forms.py   <===========
+
+
+from dataclasses import fields
+from django import forms
+from .models import PostModel
+
+#update Informations of an user
+from .models import ProfileModel
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+
+
+class UserUpdateForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = ['first_name','last_name','username','email']
+		
+	def __init__(self, *args, **kwargs):
+		super(UserUpdateForm,self).__init__(*args, **kwargs)
+		
+		for fieldname in ['username','email']:
+			self.fields[fieldname].help_text = None
+
+class ProfileUpdateForm(forms.ModelForm):
+	class Meta:
+		model = ProfileModel
+		fields = ['image']
+		
+
+
+
+
+
+#### views.py   <===========
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import PostModelForm,SignUpForm,UserUpdateForm,ProfileUpdateForm
+
+def update_info(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST or None, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST or None, request.FILES or None,instance=request.user.profilemodel)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, "Your personal info update successfully!")
+            return redirect('profile')
+            
+
+    else:
+        u_form =  UserUpdateForm( instance=request.user)
+        p_form = ProfileUpdateForm( instance=request.user.profilemodel)
+
+
+    context = {
+        'u_form':u_form,
+        'p_form':p_form,
+        
+    }
+    return render(request,'users/Editinfo.html',context) 
+
+
+
+
+
+
+#### html page   <===========
+
+
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="thumbnail">Add First Name</label>
+            {{ u_form.first_name }}
+            <label for="thumbnail">Add Last Name</label>
+            {{ u_form.last_name }}
+            <label for="thumbnail">Add Username</label>
+            {{ u_form.username}}
+            <label for="thumbnail">Add Email</label>
+            {{ u_form.email}}
+
+            {{ p_form.image}}
+            <button type="submit" class="btn">Done</button>
+        </form>
+
+
+
+
+
+
+<<<===================== User Profile image show in blog =====================================>>>>
+
+#### html page   <===========
+
+ <div class="post__author">
+   <div class="post__author-avatar">
+     <img src="{{ post.author.profilemodel.image.url }}" alt="profile" />
+   </div>
+   <div class="post__author-info">
+       <h5>By : {{post.author}}</h5>
+     <small>{{post.published_in}}</small>
+   </div>
+ </div>
+
+
+
+
+<<<===================== User post updating =====================================>>>>
+
+#### views.py   <===========
+
+#post_update
+def post_edit(request,ed):
+    post = PostModel.objects.get(id=ed)
+    if request.method == "POST":
+        form = PostUpdateForm(request.POST, instance=post) # " instance=post " = for show the values
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post update successfully!")
+            return redirect('product' , pk=post.id)   #there 'pk' is main product view id
+             
+    else:
+        form = PostUpdateForm(instance=post) 
+    context = {
+         "post" : post,
+         "form" : form,
+         
+     }
+    return render(request,'store/post_edit.html',context) 
+
+
+
+
+#### urls.py   <===========
+
+
+path('post_edit/<int:ed>', views.post_edit,name='post_edit'),
+
+
+
+#### forms.py   <===========
+
+
+
+#edit_post
+class PostUpdateForm(forms.ModelForm):
+	class Meta:
+		model = PostModel
+		fields = ('title','category','image','description')
+
+
+
+#### html page   <===========
+ <form method="POST">
+                {% csrf_token %}
+
+                <h5>Title: </h5>
+                {{form.title}}
+
+                <h5>Category : </h5>
+                {{form.category}}
+
+                <h5>Image : </h5>
+                {{form.image}}
+
+                <h5>Description : </h5>
+                {{form.description}}
+
+                <button type="submit" value="Save" class="btn">update</button>
+            </form>
+
+
+
+
+
+
+
+
+<<<===================== User post delete =====================================>>>>
+
+
+#### views.py   <===========
+
+
+#delete post
+def post_delete(request,pd):
+    post = PostModel.objects.get(id=pd)
+    if request.method == "POST":
+         post.delete()
+         messages.success(request, "Post Delete successfully!")
+         return redirect('home')
+    
+    context={
+         }
+    return render(request, 'store/post_delete.html',context)
+
+
+
+
+
+#### urls.py   <===========
+
+	path('post_delete/<int:pd>/', views.post_delete,name='post_delete'),
+
+
+
+
+#### postview.html  <===========
+
+             <div class="container singlepost__container">
+                <h2>{{post.title}}</h2>
+                {% if post.author == request.user %}
+                <a href="{% url 'post_edit' post.id%} " class="category__button">Edit post</a>
+                <a href="{% url 'post_delete' post.id%} " class="category__button">Remove post</a>
+                {% endif %}
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{{ post.author.profilemodel.image.url }}" alt="" />
+                    </div>
+                    <div class="post__author-info">
+                        <h5>By: {{post.author}}</h5>
+                        <small>{{post.published_in}}</small>
+                    </div>
+                </div>
+                <div class="singlepost__thumbnail">
+                    <img src="{{post.image.url}}" alt="" />
+                </div>
+                <p>
+                    {{post.description}}
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque
+                    consectetur ad harum, deserunt officia ea excepturi quaerat magnam
+                    unde veritatis atque. Suscipit, perspiciatis quia! Distinctio animi
+                    magnam quis soluta doloremque omnis vero ab, dolor asperiores
+                    accusantium aut pariatur eos numquam odit est reiciendis dicta ipsa
+                    quod totam amet sunt magni rem enim! Repellendus accusamus corrupti
+                    unde illum? Consequuntur, sed dicta?
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi
+                    accusantium aliquid reiciendis amet sapiente nemo. Culpa rerum
+                    accusantium nemo fuga doloribus hic similique qui nostrum explicabo
+                    eveniet nam aliquid illo iste delectus quibusdam atque magnam, iure
+                    dicta? Tempore, voluptatibus esse.
+                </p>
+                <!-- ======there is messages ========== -->
+
+            </div>
+
+
+
+
+#### confirm.html   <===========
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="alert__message error">
+                    <p>Are you delete your post?  <a href="{% url 'home'%}">Cancel!</a></p>
+                </div>
+                <div class="text-center">
+                    <button type="submit" value="Confirm" class="btn">Remove</button>
+                </div>
+            </form>
+
+
+
+
+
+
+<<<===================== comment oon the blog post of user ... =====================================>>>>
+
+
+
+#### models.py   <===========
+
+from django.contrib.auth.models import User
+
+
+class Comments(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    post = models.ForeignKey(PostModel, on_delete=models.CASCADE)
+    content = models.CharField(max_length=20000)
+    
+    def __str__(self):
+     return self.content
+      
+
+
+class PostModel(models.Model):
+    title = models.CharField(max_length=250)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+    description = models.TextField(default='', blank=True, null=True)
+    image = models.ImageField(upload_to='post_images/')
+    published_in = models.DateField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('-published_in',)
+        
+    def comment_count(self):
+        return self.comment_set.all().count()
+
+    def comments(self):
+        return self.comment_set.all()
+
+    def __str__(self):
+        return self.title
+
+
+
+
+
+#### post view page.html   <===========
+
+
+
+        {% if post.comments %}
+            <h5>There is comments sections : </h5>
+            {% for comment in post.comments %}
+
+
+            <div class="post__author">
+                <div class="post__author-avatar">
+                    <img src="{{ comment.user.profilemodel.image.url }}" alt="" />
+
+                </div>
+                <div class="post__author-info">
+                    <h5>{{ comment.user }}</h5>
+                    <small>{{ comment.content }} </small>
+                </div>
+            </div>
+            {% endfor %}
+            {%else%}
+            {% endif %}
+ 
+
+ <-- comment add sections -->
+
+    {% if request.user.is_authenticated %}
+    <section class="search__bar">
+        <center>
+            <h3>Add comment in the post ......</h3>
+        </center>
+        <form method="POST" class="container search__bar-container">
+
+            {% csrf_token %}
+            {{form.content}}
+            <button type="submit" class="btn">Add</button>
+        </form>
+    </section>
+    {% else %}
+    {%endif%}
+
+
+
+#### views.py   <==================
+
+from .models import PostModel
+from .forms import CommentForm
+
+def product(request,pk):
+    prodviews = PostModel.objects.get(id=pk)
+    if request.method == 'POST':
+        c_form = CommentForm(request.POST)
+        if c_form.is_valid():
+            instance = c_form.save(commit=False)
+            instance.user = request.user
+            instance.post = prodviews
+            instance.save()
+            messages.success(request,"comment added on the post..... thanku")
+            return redirect('product' , pk=prodviews.id)
+            
+    else:
+        c_form = CommentForm() 
+    return render(request,'store/productview.html',{'post':prodviews,'form':c_form})
+
+
+
+
+
+#### forms.py   <===========
+
+#user comment on the post
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+
+
+<<<===================== Login required for unknown user ... =====================================>>>>
+#### settings.py   <===========
+
+LOGIN_REDIRECT_URL = "home"
+LOGIN_URL = 'sign_in'
+
+
+
+#### urls.py   <===========
+
+#same as like :
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def profile(request):
+    posts = PostModel.objects.filter(author=request.user)
+    
+    return render(request,'users/profile.html',{'posts':posts}) 
+
+
+
+
+
+
+
+
+
+
+
+
+<<<===================== forget password an user ... =====================================>>>>
+
+#### urls.py   <===========
+
+from django.contrib.auth import views as auth_view  
+
+urlpatterns = [
+
+	path('password_reset/',auth_view.PasswordResetView.as_view(template_name="users/password_reset.html"),name="password_reset"),
+	path('password_reset_done/',auth_view.PasswordResetDoneView.as_view(template_name="users/password_reset_done.html"),name="password_reset_done"),
+	path('password_reset_confirm/<uidb64>/<token>/',auth_view.PasswordResetConfirmView.as_view(template_name="users/password_reset_confirm.html"),name="password_reset_confirm"),
+	path('password_reset_complete/',auth_view.PasswordResetCompleteView.as_view(template_name="users/password_reset_complete.html"),name="password_reset_complete"),
+    
+]
+
+
+#### settings.py   <===========
+
+
+
+
+#### html page   <===========
+#### html page   <===========
+#### html page   <===========
+#### html page   <===========
+#### html page   <===========
+#### html page   <===========
+
+

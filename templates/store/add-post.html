@@ -1,0 +1,49 @@
+{% extends "link.html" %}
+{% load static %}
+
+
+{% block content %}
+    {% include 'navbar.html' %}
+
+<!-- add_post.html -->
+<main>
+  <section class="form__section">
+    <div class="container form__section-container">
+      <h2>Add Post</h2>
+
+        <!-- ==== there is messages ======= -->
+      <!--<div class="alert__message error">
+        <p>This is an error message</p>
+      </div>-->
+
+
+
+
+      <form action="{% url 'add_post' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4>Title:</h4>
+        {{ form.title }}
+        <h4>Descriptions :</h4>
+
+        {{ form.description }}
+        <h4>Category :</h4>
+        
+        {{ form.category }}
+        
+        
+        <div class="form__control">
+          <label for="thumbnail">Add Thumbnail</label>
+          {{ form.image }}
+        </div>
+        <button type="submit" class="btn">Add Post</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+    
+
+    
+{% endblock content %}
+
+

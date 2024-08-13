@@ -1,0 +1,140 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | Blog for you{%endblock%}
+
+
+
+    {% block content %}
+        {% include 'navbar.html' %}
+<!-- main html tag start -->
+
+
+<main>
+    <!-- ==========================featured Start here================================ -->
+
+
+    <section class="featured">
+        <div class="container featured__container">
+            <div class="post__thumbnail">
+                <img src="{%static 'images/blog1.jpg'%}" alt="" />
+            </div>
+            <div class="post__info">
+                <a href="#" class="category__button">Wild Life</a>
+                <h2 class="post__title">
+                    <a href="{% url 'blog'%}">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                        Perspiciatis, ullam.
+                    </a>
+                </h2>
+                <p class="post__body" align="justify">
+                    Blogs have become an integral part of the digital landscape, offering a platform for individuals,
+                    businesses, and organizations to share their thoughts, expertise, and experiences with the world.
+                    In the vast expanse of the internet, blogs serve as personal diaries, professional portfolios,
+                    informational resources, and even hubs for niche communities. They offer a unique blend of creativity,
+                    expression, and information dissemination, allowing writers to connect with audiences across the globe on a multitude of topics.
+
+                    At their core, blogs are dynamic entities,
+                    constantly evolving with the interests and passions of their creators.
+                    They provide a space for individuals to express themselves freely,
+                    whether it's through personal anecdotes, insightful commentary,
+                    or detailed analysis. Unlike traditional media outlets,
+                    blogs offer a level of immediacy and authenticity that resonates with readers seeking genuine, unfiltered content.
+                </p>
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{%static 'images/Admin.jpg'%}" alt="" />
+                    </div>
+                    <div class="post__author-info">
+                        <h5>By: Jane Doe</h5>
+                        <small>June 10,2022 - 07:23</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================featured End here================================ -->
+    <!-- =======================message is start here ===========================-->
+    {% if messages %}
+
+    {% for message in messages %}
+    <div class="container">
+        <div id="alertMessage" class="alert__message error">
+            <p style="color:rgb(255, 216, 0)">{{ message }}!</p>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+    <!-- =======================message is end here ===========================-->
+    <!-- ==========================Posts start here================================ -->
+    <section class="posts">
+        <div class="container posts__container">
+            {% for post in posts %}
+            <article class="post">
+                <div class="post__thumbnail">
+                    <img src=" {{ post.image.url }} " alt="" />
+                </div>
+                <div class="post__info">
+                    <a href="{% url 'category' post.category %}" class="category__button">{{post.category}}</a>
+                    <h3 class="post__title">
+                        <a href="{%url 'product' post.id %}">{{post.title|slice:':36'}} ...</a>
+                    </h3>
+                    <p class="post__body">
+                        {{post.description | slice:":120"}}
+                    </p>
+                </div>
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="{{ post.author.profilemodel.image.url }}" alt="profile" />
+                    </div>
+                    <div class="post__author-info">
+                        <h5>By : {{post.author}}</h5>
+                        <small>{{post.published_in | timesince}} ago</small>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+
+        </div>
+    </section>
+    <!-- ==========================Posts End here================================ -->
+    <!-- <form class="d-flex" action="{% url 'blog' %}" method="POST">
+        {% csrf_token %}
+        <input class="form-control me-2" type="text" placeholder="Search"  name="searched">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+     -->
+    <!-- ==========================Category buttons start here================================ -->
+    <section class="category__buttons">
+        <div class="search__bar" style="margin-bottom: 5rem;">
+            <center>
+                <h1 style="font-size:2rem;font-family:Open Sans;margin-bottom: 3rem;">How can I help you today?</h1>
+            </center>
+            <form action="{% url 'search' %}" method="POST" class="container search__bar-container">
+                {% csrf_token %}
+                <div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="searched" placeholder="Search" style="color:white;" />
+                </div>
+                <button type="submit" class="btn">Go</button>
+            </form>
+        </div>
+        <div class="container category__buttons-container">
+            <a href="{% url 'category' 'Art' %}" class="category__button">Art</a>
+            <a href="{% url 'category' 'Wild Lifes' %}" class="category__button">Wild Life</a>
+            <a href="{% url 'category' 'Travel' %}" class="category__button">Travel</a>
+            <a href="{% url 'category' 'Science & Technology' %}" class="category__button">Science & Technology</a>
+            <a href="{% url 'category' 'Food' %}" class="category__button">Food</a>
+            <a href="{% url 'category' 'Music' %}" class="category__button">Music</a>
+
+        </div>
+    </section>
+    <!-- ==========================Category buttons End here================================ -->
+
+
+</main>
+<!-- main html tag end -->
+{% include 'footer.html'%}
+
+    {% endblock content %}

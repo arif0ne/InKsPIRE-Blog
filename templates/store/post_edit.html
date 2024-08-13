@@ -1,0 +1,39 @@
+{% extends "link.html" %}
+{%load static %}
+{%block title%}InKsPIRE | Update Post{%endblock%}
+
+    {% block content %}
+        {% include 'navbar.html' %}
+
+
+<!-- main html tag start -->
+<main>
+    <section class="form__section">
+        <div class="container form__section-container">
+            <center>
+                <h2>Update </h2> <br />" {{post.title}} "<br />
+            </center>
+
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <h5>Title: </h5>
+                {{form.title}}
+
+                <h5>Category : </h5>
+                {{form.category}}
+
+                <h5>Image : </h5>
+                {{form.image}}
+
+                <h5>Description : </h5>
+                {{form.description}}
+
+                <button type="submit" value="Save" class="btn">update</button>
+            </form>
+        </div>
+    </section>
+</main>
+<!-- main html tag end -->
+    {% endblock content %}

@@ -1,0 +1,93 @@
+{% extends "link.html" %}
+{%load static %}
+ {%block link%}
+
+ {%endblock link%}
+
+    {% block content %}
+{% include 'navbar.html' %}
+
+
+
+<section class="featured">
+    <center style="margin-bottom:4rem;">
+        <h2>Your Profile</h2>
+    </center>
+
+    {% if messages %}
+
+    {% for message in messages %}
+    <div class="container">
+        <div id="alertMessage" class="alert__message error">
+            <p style="color:rgb(255, 216, 0)">{{ message }}!</p>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+
+    <div class="container featured__container">
+        <div class="post__thumbnail">
+            <img src="{{user.profilemodel.image.url}}" alt="profile-img" />
+        </div>
+        <div class="post__info">
+
+            <a href="{% url 'editinfo'%}" style="margin-bottom: 1rem; margin-right: .3rem;" class="category__button">Edit info</a>
+            <a href="#" style="margin-bottom: 1rem; margin-right: .3rem;" class="category__button">Change password</a>
+
+            <h2 class="post__title" style="margin-bottom:1rem;">
+
+                {{ user.first_name }}  {{ user.last_name  }}
+
+            </h2>
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+                email: {{ user.email }}
+
+            </h3>
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+                username: {{user.username}}
+
+            </h3>
+
+            <br />
+            <br />
+
+            <br />
+
+
+            <h3 class="post__title" style="margin-bottom:1rem;">
+
+                # Your post history :::
+
+            </h3>
+            {% if posts %}
+            <ul>
+                {% for post in posts %}
+                <a href="{%url 'product' post.id %}">
+                    <div style="margin-bottom:1rem;">
+
+                <li><h4>{{ post.title }}</h4></li>
+
+
+        </div>
+        </a>
+        {% endfor %}
+
+        {% else %}
+        <p>No posts found.</p>
+        </ul>
+        {% endif %}
+    </div>
+    </div>
+</section>
+
+
+<div style="margin-bottom:10rem;"></div>
+
+
+{% include 'footer.html'%}
+
+{% endblock content %}
